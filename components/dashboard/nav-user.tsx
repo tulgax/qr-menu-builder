@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import {
   User,
   CreditCard,
@@ -28,6 +29,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { createClient } from "@/lib/supabase/client"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export function NavUser({
   user,
@@ -39,10 +43,18 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+  const supabase = createClient()
 
   const handleLogout = async () => {
-    // Add logout logic here
-    window.location.href = '/login'
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      toast.error("Failed to log out")
+    } else {
+      toast.success("Logged out successfully")
+      router.push('/login')
+      router.refresh()
+    }
   }
 
   return (
@@ -89,17 +101,23 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User />
-                Account
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/account">
+                  <User />
+                  Account
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/billing">
+                  <CreditCard />
+                  Billing
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/notifications">
+                  <Bell />
+                  Notifications
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

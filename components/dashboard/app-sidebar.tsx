@@ -6,7 +6,6 @@ import {
   FolderOpen,
   ListOrdered,
   QrCode,
-  Settings,
   HelpCircle,
   Building2,
 } from "lucide-react"
@@ -52,11 +51,6 @@ const data = {
     },
   ],
   navSecondary: [
-    {
-      title: "Settings",
-      url: "/dashboard/settings",
-      icon: Settings,
-    },
     {
       title: "Help",
       url: "/dashboard/help",
