@@ -1,6 +1,7 @@
 'use client'
 
-import Draggable from 'react-draggable'
+import { useRef, useState, useEffect } from 'react'
+import Draggable, { DraggableData } from 'react-draggable'
 import { Table as TableType } from '@/types/database'
 import { Users, Edit2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -13,7 +14,29 @@ interface TableIconProps {
 }
 
 export function TableIcon({ table, onDragStop, onEdit, scale = 1 }: TableIconProps) {
-  const handleDrag = (_e: unknown, data: { x: number; y: number }) => {
+  const nodeRef = useRef<HTMLDivElement>(null)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    // Convert percentage position to pixels
+    const canvas = document.getElementById('floor-plan-canvas')
+    if (!canvas) return
+
+    const canvasWidth = canvas.offsetWidth
+    const canvasHeight = canvas.offsetHeight
+
+    const pixelX = (table.position_x / 100) * canvasWidth
+    const pixelY = (table.position_y / 100) * canvasHeight
+
+    setPosition({ x: pixelX, y: pixelY })
+  }, [table.position_x, table.position_y])
+
+  const handleDrag = (_e: unknown, data: DraggableData) => {
+    // Update position immediately for smooth dragging
+    setPosition({ x: data.x, y: data.y })
+  }
+
+  const handleStop = (_e: unknown, data: DraggableData) => {
     // Convert pixel position to percentage for responsive storage
     const canvas = document.getElementById('floor-plan-canvas')
     if (!canvas) return
@@ -27,22 +50,17 @@ export function TableIcon({ table, onDragStop, onEdit, scale = 1 }: TableIconPro
     onDragStop(table.id, percentX, percentY)
   }
 
-  // Convert percentage position to pixels
-  const canvas = document.getElementById('floor-plan-canvas')
-  const canvasWidth = canvas?.offsetWidth || 800
-  const canvasHeight = canvas?.offsetHeight || 600
-
-  const pixelX = (table.position_x / 100) * canvasWidth
-  const pixelY = (table.position_y / 100) * canvasHeight
-
   return (
     <Draggable
-      position={{ x: pixelX, y: pixelY }}
-      onStop={handleDrag}
+      nodeRef={nodeRef}
+      position={position}
+      onDrag={handleDrag}
+      onStop={handleStop}
       scale={scale}
       bounds="parent"
     >
       <div
+        ref={nodeRef}
         className={cn(
           "absolute cursor-move select-none group",
           "transition-transform hover:scale-105"
