@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { TableList } from '@/components/dashboard/table-list'
+import { FloorPlanCanvas } from '@/components/dashboard/floor-plan-canvas'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Business } from '@/types/database'
 
@@ -61,12 +62,7 @@ export default async function TablesPage() {
           </TabsContent>
           
           <TabsContent value="floor-plan" className="mt-6">
-            <div className="text-center py-12 border-2 border-dashed rounded-lg">
-              <p className="text-muted-foreground">Floor plan coming soon...</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Drag and drop tables to create your restaurant layout
-              </p>
-            </div>
+            <FloorPlanCanvas initialTables={tables || []} businessId={business.id} />
           </TabsContent>
           
           <TabsContent value="analytics" className="mt-6">
