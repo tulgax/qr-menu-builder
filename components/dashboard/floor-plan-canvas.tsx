@@ -4,10 +4,9 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Table as TableType } from '@/types/database'
 import { TableIcon } from './table-icon'
-import { TableForm } from './table-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ZoomIn, ZoomOut, RotateCcw, Grid3x3, Plus } from 'lucide-react'
+import { ZoomIn, ZoomOut, RotateCcw, Grid3x3, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
@@ -16,12 +15,18 @@ interface FloorPlanCanvasProps {
   businessId: string
 }
 
+interface PendingPosition {
+  tableId: string
+  x: number
+  y: number
+}
+
 export function FloorPlanCanvas({ initialTables, businessId }: FloorPlanCanvasProps) {
   const [tables, setTables] = useState<TableType[]>(initialTables)
-  const [selectedTable, setSelectedTable] = useState<TableType | undefined>()
-  const [formOpen, setFormOpen] = useState(false)
   const [scale, setScale] = useState(1)
   const [showGrid, setShowGrid] = useState(true)
+  const [pendingPositions, setPendingPositions] = useState<PendingPosition[]>([])
+  const [saving, setSaving] = useState(false)
   const supabase = createClient()
 
   const refreshTables = async () => {
@@ -33,41 +38,65 @@ export function FloorPlanCanvas({ initialTables, businessId }: FloorPlanCanvasPr
 
     if (data) {
       setTables(data)
+      setPendingPositions([])
     }
   }
 
-  const handleDragStop = async (tableId: string, x: number, y: number) => {
-    // Update position in database
-    const { error } = await supabase
-      .from('tables')
-      // @ts-expect-error Supabase type limitation
-      .update({
-        position_x: x,
-        position_y: y,
-      })
-      .eq('id', tableId)
+  const handleDragStop = (tableId: string, x: number, y: number) => {
+    // Update local state immediately for visual feedback
+    setTables(tables.map(t => 
+      t.id === tableId 
+        ? { ...t, position_x: x, position_y: y }
+        : t
+    ))
 
-    if (error) {
-      toast.error('Failed to save position')
+    // Track pending position changes
+    setPendingPositions(prev => {
+      const existing = prev.findIndex(p => p.tableId === tableId)
+      if (existing >= 0) {
+        const updated = [...prev]
+        updated[existing] = { tableId, x, y }
+        return updated
+      }
+      return [...prev, { tableId, x, y }]
+    })
+  }
+
+  const handleSavePositions = async () => {
+    if (pendingPositions.length === 0) {
+      toast.info('No changes to save')
+      return
+    }
+
+    setSaving(true)
+    try {
+      // Save all pending positions
+      for (const { tableId, x, y } of pendingPositions) {
+        const { error } = await supabase
+          .from('tables')
+          // @ts-expect-error Supabase type limitation
+          .update({
+            position_x: x,
+            position_y: y,
+          })
+          .eq('id', tableId)
+
+        if (error) throw error
+      }
+
+      toast.success(`Saved ${pendingPositions.length} table position(s)`)
+      setPendingPositions([])
+    } catch (error) {
+      toast.error('Failed to save positions')
       console.error(error)
-    } else {
-      // Update local state
-      setTables(tables.map(t => 
-        t.id === tableId 
-          ? { ...t, position_x: x, position_y: y }
-          : t
-      ))
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleEdit = (table: TableType) => {
-    setSelectedTable(table)
-    setFormOpen(true)
-  }
-
-  const handleCreate = () => {
-    setSelectedTable(undefined)
-    setFormOpen(true)
+  const handleEdit = () => {
+    // Redirect to table list for editing
+    window.location.href = '/dashboard/tables?tab=list'
   }
 
   const handleZoomIn = () => {
@@ -114,24 +143,20 @@ export function FloorPlanCanvas({ initialTables, businessId }: FloorPlanCanvasPr
                 Drag tables to arrange your restaurant layout
               </CardDescription>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleCreate}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Table
+            {pendingPositions.length > 0 && (
+              <Button onClick={handleSavePositions} disabled={saving}>
+                <Save className="mr-2 h-4 w-4" />
+                Save {pendingPositions.length} Change{pendingPositions.length > 1 ? 's' : ''}
               </Button>
-            </div>
+            )}
           </div>
         </CardHeader>
         <CardContent>
           {tables.length === 0 ? (
             <div className="text-center py-12 border-2 border-dashed rounded-lg">
               <p className="text-muted-foreground mb-4">
-                No tables yet. Create your first table to start building your floor plan.
+                No tables yet. Go to the Table List tab to create your first table.
               </p>
-              <Button onClick={handleCreate}>
-                <Plus className="mr-2 h-4 w-4" />
-                Create Table
-              </Button>
             </div>
           ) : (
             <>
@@ -215,22 +240,14 @@ export function FloorPlanCanvas({ initialTables, businessId }: FloorPlanCanvasPr
                 <ul className="list-disc list-inside space-y-1 ml-4">
                   <li>Drag tables to position them on your floor plan</li>
                   <li>Use zoom controls to get a better view</li>
-                  <li>Click the edit icon on a table to modify its details</li>
-                  <li>Positions are saved automatically</li>
+                  <li>Click the Save button to save your changes</li>
+                  <li>Go to Table List tab to add, edit, or delete tables</li>
                 </ul>
               </div>
             </>
           )}
         </CardContent>
       </Card>
-
-      <TableForm
-        businessId={businessId}
-        table={selectedTable}
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        onSuccess={refreshTables}
-      />
 
       <style jsx global>{`
         .bg-grid-pattern {
@@ -248,3 +265,4 @@ export function FloorPlanCanvas({ initialTables, businessId }: FloorPlanCanvasPr
     </>
   )
 }
+

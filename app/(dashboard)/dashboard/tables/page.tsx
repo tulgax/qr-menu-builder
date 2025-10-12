@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { TableList } from '@/components/dashboard/table-list'
 import { FloorPlanCanvas } from '@/components/dashboard/floor-plan-canvas'
+import { TableAnalytics } from '@/components/dashboard/table-analytics'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Business } from '@/types/database'
 
@@ -66,12 +67,7 @@ export default async function TablesPage() {
           </TabsContent>
           
           <TabsContent value="analytics" className="mt-6">
-            <div className="text-center py-12 border-2 border-dashed rounded-lg">
-              <p className="text-muted-foreground">Analytics coming soon...</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                View scan statistics and performance metrics for each table
-              </p>
-            </div>
+            <TableAnalytics initialTables={tables || []} businessId={business.id} />
           </TabsContent>
         </Tabs>
       </div>
