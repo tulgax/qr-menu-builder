@@ -1,0 +1,61 @@
+import { Business, Category, MenuItem } from '@/types/database'
+import { CategorySection } from './category-section'
+
+interface MenuViewProps {
+  business: Business
+  categories: Category[]
+  items: MenuItem[]
+}
+
+export function MenuView({ business, categories, items }: MenuViewProps) {
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-8">
+          {business.logo_url && (
+            <img
+              src={business.logo_url}
+              alt={business.name}
+              className="h-16 mb-4"
+            />
+          )}
+          <h1 className="text-4xl font-bold text-primary">{business.name}</h1>
+          {business.description && (
+            <p className="text-muted-foreground mt-2">{business.description}</p>
+          )}
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {categories.length === 0 || items.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              Menu coming soon! Please check back later.
+            </p>
+          </div>
+        ) : (
+          categories.map((category) => {
+            const categoryItems = items.filter(
+              item => item.category_id === category.id
+            )
+            return (
+              <CategorySection
+                key={category.id}
+                category={category}
+                items={categoryItems}
+              />
+            )
+          })
+        )}
+      </main>
+
+      <footer className="border-t bg-card mt-12">
+        <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
+          <p>Powered by QR Menu Builder</p>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+
