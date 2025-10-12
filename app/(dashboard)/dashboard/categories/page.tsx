@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { CategoryList } from '@/components/dashboard/category-list'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { Business } from '@/types/database'
 
 export default async function CategoriesPage() {
@@ -30,7 +31,20 @@ export default async function CategoriesPage() {
     .eq('business_id', business.id)
     .order('display_order', { ascending: true })
 
-  return <CategoryList initialCategories={categories || []} businessId={business.id} />
+  return (
+    <>
+      <DashboardHeader 
+        title="Categories" 
+        breadcrumbs={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Categories" }
+        ]}
+      />
+      <div className="flex flex-1 flex-col p-6">
+        <CategoryList initialCategories={categories || []} businessId={business.id} />
+      </div>
+    </>
+  )
 }
 
 

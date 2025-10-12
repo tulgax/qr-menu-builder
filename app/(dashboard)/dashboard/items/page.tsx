@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { MenuItemList } from '@/components/dashboard/menu-item-list'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
 import { Business, Category } from '@/types/database'
 
 export default async function MenuItemsPage() {
@@ -42,11 +43,22 @@ export default async function MenuItemsPage() {
     : { data: [] }
 
   return (
-    <MenuItemList 
-      initialItems={items || []} 
-      categories={categories || []}
-      businessId={business.id}
-    />
+    <>
+      <DashboardHeader 
+        title="Menu Items" 
+        breadcrumbs={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Menu Items" }
+        ]}
+      />
+      <div className="flex flex-1 flex-col p-6">
+        <MenuItemList 
+          initialItems={items || []} 
+          categories={categories || []}
+          businessId={business.id}
+        />
+      </div>
+    </>
   )
 }
 
