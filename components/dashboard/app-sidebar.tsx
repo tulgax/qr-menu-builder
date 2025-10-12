@@ -8,6 +8,7 @@ import {
   QrCode,
   HelpCircle,
   Building2,
+  Table2,
 } from "lucide-react"
 
 import { NavMain } from "@/components/dashboard/nav-main"
@@ -41,6 +42,12 @@ const data = {
       title: "Menu Items",
       url: "/dashboard/items",
       icon: ListOrdered,
+      isActive: false,
+    },
+    {
+      title: "Tables",
+      url: "/dashboard/tables",
+      icon: Table2,
       isActive: false,
     },
     {

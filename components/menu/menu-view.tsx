@@ -1,13 +1,15 @@
-import { Business, Category, MenuItem } from '@/types/database'
+import { Business, Category, MenuItem, Table as TableType } from '@/types/database'
 import { CategorySection } from './category-section'
+import { TableIndicator } from './table-indicator'
 
 interface MenuViewProps {
   business: Business
   categories: Category[]
   items: MenuItem[]
+  table?: TableType | null
 }
 
-export function MenuView({ business, categories, items }: MenuViewProps) {
+export function MenuView({ business, categories, items, table }: MenuViewProps) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
@@ -27,6 +29,7 @@ export function MenuView({ business, categories, items }: MenuViewProps) {
       </header>
 
       <main className="container mx-auto px-4 py-8 space-y-8">
+        {table && <TableIndicator tableName={table.name} />}
         {categories.length === 0 || items.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">

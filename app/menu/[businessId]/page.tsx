@@ -1,14 +1,20 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { MenuView } from '@/components/menu/menu-view'
-import { Business, Category } from '@/types/database'
+import { TableScanLogger } from '@/components/menu/table-scan-logger'
+import { Business, Category, Table as TableType } from '@/types/database'
+
+interface PublicMenuPageProps {
+  params: Promise<{ businessId: string }>
+  searchParams: Promise<{ table?: string }>
+}
 
 export default async function PublicMenuPage({
   params,
-}: {
-  params: Promise<{ businessId: string }>
-}) {
+  searchParams,
+}: PublicMenuPageProps) {
   const { businessId } = await params
+  const { table: tableId } = await searchParams
   const supabase = await createClient()
 
   const { data: businessData } = await supabase
@@ -22,6 +28,21 @@ export default async function PublicMenuPage({
   }
 
   const business: Business = businessData
+
+  // Get table info if tableId is provided
+  let table: TableType | null = null
+  if (tableId) {
+    const { data: tableData } = await supabase
+      .from('tables')
+      .select('*')
+      .eq('id', tableId)
+      .eq('business_id', businessId)
+      .single()
+
+    if (tableData) {
+      table = tableData as TableType
+    }
+  }
 
   const { data: categoriesData } = await supabase
     .from('categories')
@@ -41,11 +62,15 @@ export default async function PublicMenuPage({
     : { data: [] }
 
   return (
-    <MenuView
-      business={business}
-      categories={categories || []}
-      items={items || []}
-    />
+    <>
+      {table && <TableScanLogger tableId={table.id} />}
+      <MenuView
+        business={business}
+        categories={categories || []}
+        items={items || []}
+        table={table}
+      />
+    </>
   )
 }
 
