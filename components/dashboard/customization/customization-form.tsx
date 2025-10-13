@@ -64,13 +64,6 @@ export function CustomizationForm({ business }: CustomizationFormProps) {
   const handleSave = async () => {
     setSaving(true)
     try {
-      // TODO: Uncomment after running database migration (supabase/schema-customization.sql)
-      // The customization columns need to be added to the businesses table first
-      
-      toast.error('Please run the database migration first: supabase/schema-customization.sql')
-      
-      // Uncomment this code after running the migration:
-      /*
       const { error } = await supabase
         .from('businesses')
         .update({
@@ -108,7 +101,6 @@ export function CustomizationForm({ business }: CustomizationFormProps) {
       }
 
       toast.success('Customization saved successfully!')
-      */
     } catch (error) {
       console.error('Save error:', error)
       toast.error('Failed to save customization')
