@@ -15,7 +15,7 @@ export function CategorySection({ category, items }: CategorySectionProps) {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-2xl font-bold border-b pb-2">{category.name}</h2>
+      <h2 className="text-2xl font-bold border-b pb-2 menu-category-title">{category.name}</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {availableItems.map((item) => (
           <MenuItemCard key={item.id} item={item} />

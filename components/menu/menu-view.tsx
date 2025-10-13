@@ -1,6 +1,7 @@
 import { Business, Category, MenuItem, Table as TableType } from '@/types/database'
 import { CategorySection } from './category-section'
 import { TableIndicator } from './table-indicator'
+import { ContactSection } from './contact-section'
 
 interface MenuViewProps {
   business: Business
@@ -11,17 +12,17 @@ interface MenuViewProps {
 
 export function MenuView({ business, categories, items, table }: MenuViewProps) {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
+    <div className="min-h-screen">
+      <header className="border-b menu-item-card">
         <div className="container mx-auto px-4 py-8">
-          {business.logo_url && (
+          {business.show_logo && business.logo_url && (
             <img
               src={business.logo_url}
               alt={business.name}
               className="h-16 mb-4"
             />
           )}
-          <h1 className="text-4xl font-bold text-primary">{business.name}</h1>
+          <h1 className="text-4xl font-bold menu-category-title">{business.name}</h1>
           {business.description && (
             <p className="text-muted-foreground mt-2">{business.description}</p>
           )}
@@ -50,6 +51,8 @@ export function MenuView({ business, categories, items, table }: MenuViewProps) 
             )
           })
         )}
+        
+        <ContactSection business={business} />
       </main>
 
       <footer className="border-t bg-card mt-12">

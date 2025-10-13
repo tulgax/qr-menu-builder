@@ -13,7 +13,7 @@ export function MenuItemCard({ item }: MenuItemCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden menu-item-card">
       {item.image_url ? (
         <img
           src={item.image_url}
@@ -28,7 +28,7 @@ export function MenuItemCard({ item }: MenuItemCardProps) {
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg">{item.name}</CardTitle>
-          <span className="text-lg font-bold text-primary">${item.price.toFixed(2)}</span>
+          <span className="text-lg font-bold menu-item-price">${item.price.toFixed(2)}</span>
         </div>
         <CardDescription>{item.description}</CardDescription>
       </CardHeader>

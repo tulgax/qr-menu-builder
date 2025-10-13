@@ -9,6 +9,7 @@ import {
   HelpCircle,
   Building2,
   Table2,
+  Palette,
 } from "lucide-react"
 
 import { NavMain } from "@/components/dashboard/nav-main"
@@ -30,6 +31,12 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: BarChart3,
+      isActive: false,
+    },
+    {
+      title: "Customization",
+      url: "/dashboard/customization",
+      icon: Palette,
       isActive: false,
     },
     {

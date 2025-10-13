@@ -2,11 +2,13 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { MenuView } from '@/components/menu/menu-view'
 import { TableScanLogger } from '@/components/menu/table-scan-logger'
+import { ThemedMenu } from '@/components/menu/themed-menu'
+import { PreviewBanner } from '@/components/menu/preview-banner'
 import { Business, Category, Table as TableType } from '@/types/database'
 
 interface PublicMenuPageProps {
   params: Promise<{ businessId: string }>
-  searchParams: Promise<{ table?: string }>
+  searchParams: Promise<{ table?: string; preview?: string }>
 }
 
 export default async function PublicMenuPage({
@@ -14,7 +16,8 @@ export default async function PublicMenuPage({
   searchParams,
 }: PublicMenuPageProps) {
   const { businessId } = await params
-  const { table: tableId } = await searchParams
+  const { table: tableId, preview } = await searchParams
+  const isPreview = preview === 'true'
   const supabase = await createClient()
 
   const { data: businessData } = await supabase
@@ -62,7 +65,8 @@ export default async function PublicMenuPage({
     : { data: [] }
 
   return (
-    <>
+    <ThemedMenu business={business}>
+      {isPreview && <PreviewBanner />}
       {table && <TableScanLogger tableId={table.id} />}
       <MenuView
         business={business}
@@ -70,7 +74,7 @@ export default async function PublicMenuPage({
         items={items || []}
         table={table}
       />
-    </>
+    </ThemedMenu>
   )
 }
 

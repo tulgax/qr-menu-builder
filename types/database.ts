@@ -16,7 +16,31 @@ export interface Database {
           name: string
           description: string | null
           logo_url: string | null
+          favicon_url: string | null
+          primary_color: string
+          background_color: string
+          text_color: string
+          card_background_color: string
+          font_family: string
+          heading_font_family: string
+          layout_style: string
+          menu_width: string
+          phone: string | null
+          email: string | null
+          address: string | null
+          website: string | null
+          facebook_url: string | null
+          instagram_url: string | null
+          twitter_url: string | null
+          opening_hours: Record<string, string> | null
+          wifi_password: string | null
+          additional_notes: string | null
+          show_logo: boolean
+          show_contact_info: boolean
+          show_social_links: boolean
+          show_opening_hours: boolean
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
@@ -24,7 +48,31 @@ export interface Database {
           name: string
           description?: string | null
           logo_url?: string | null
+          favicon_url?: string | null
+          primary_color?: string
+          background_color?: string
+          text_color?: string
+          card_background_color?: string
+          font_family?: string
+          heading_font_family?: string
+          layout_style?: string
+          menu_width?: string
+          phone?: string | null
+          email?: string | null
+          address?: string | null
+          website?: string | null
+          facebook_url?: string | null
+          instagram_url?: string | null
+          twitter_url?: string | null
+          opening_hours?: Record<string, string> | null
+          wifi_password?: string | null
+          additional_notes?: string | null
+          show_logo?: boolean
+          show_contact_info?: boolean
+          show_social_links?: boolean
+          show_opening_hours?: boolean
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
@@ -32,7 +80,31 @@ export interface Database {
           name?: string
           description?: string | null
           logo_url?: string | null
+          favicon_url?: string | null
+          primary_color?: string
+          background_color?: string
+          text_color?: string
+          card_background_color?: string
+          font_family?: string
+          heading_font_family?: string
+          layout_style?: string
+          menu_width?: string
+          phone?: string | null
+          email?: string | null
+          address?: string | null
+          website?: string | null
+          facebook_url?: string | null
+          instagram_url?: string | null
+          twitter_url?: string | null
+          opening_hours?: Record<string, string> | null
+          wifi_password?: string | null
+          additional_notes?: string | null
+          show_logo?: boolean
+          show_contact_info?: boolean
+          show_social_links?: boolean
+          show_opening_hours?: boolean
           created_at?: string
+          updated_at?: string
         }
       }
       categories: {
