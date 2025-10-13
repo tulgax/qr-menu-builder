@@ -64,34 +64,37 @@ export function CustomizationForm({ business }: CustomizationFormProps) {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const { error } = await supabase
-        .from('businesses')
-        .update({
-          logo_url: formData.logo_url,
-          favicon_url: formData.favicon_url,
-          primary_color: formData.primary_color,
-          background_color: formData.background_color,
-          text_color: formData.text_color,
-          card_background_color: formData.card_background_color,
-          font_family: formData.font_family,
-          heading_font_family: formData.heading_font_family,
-          layout_style: formData.layout_style,
-          menu_width: formData.menu_width,
-          phone: formData.phone,
-          email: formData.email,
-          address: formData.address,
-          website: formData.website,
-          facebook_url: formData.facebook_url,
-          instagram_url: formData.instagram_url,
-          twitter_url: formData.twitter_url,
-          opening_hours: formData.opening_hours,
-          wifi_password: formData.wifi_password,
-          additional_notes: formData.additional_notes,
-          show_logo: formData.show_logo,
-          show_contact_info: formData.show_contact_info,
-          show_social_links: formData.show_social_links,
-          show_opening_hours: formData.show_opening_hours,
-        })
+      // Type assertion needed because TypeScript doesn't know about new columns yet
+      const updateData = {
+        logo_url: formData.logo_url,
+        favicon_url: formData.favicon_url,
+        primary_color: formData.primary_color,
+        background_color: formData.background_color,
+        text_color: formData.text_color,
+        card_background_color: formData.card_background_color,
+        font_family: formData.font_family,
+        heading_font_family: formData.heading_font_family,
+        layout_style: formData.layout_style,
+        menu_width: formData.menu_width,
+        phone: formData.phone,
+        email: formData.email,
+        address: formData.address,
+        website: formData.website,
+        facebook_url: formData.facebook_url,
+        instagram_url: formData.instagram_url,
+        twitter_url: formData.twitter_url,
+        opening_hours: formData.opening_hours,
+        wifi_password: formData.wifi_password,
+        additional_notes: formData.additional_notes,
+        show_logo: formData.show_logo,
+        show_contact_info: formData.show_contact_info,
+        show_social_links: formData.show_social_links,
+        show_opening_hours: formData.show_opening_hours,
+      }
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase.from('businesses') as any)
+        .update(updateData)
         .eq('id', business.id)
 
       if (error) {
