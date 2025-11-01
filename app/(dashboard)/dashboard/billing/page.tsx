@@ -66,7 +66,7 @@ export default function BillingPage() {
                 <CardTitle>Free</CardTitle>
               </div>
               <div className="space-y-1">
-                <div className="text-3xl font-bold">$0</div>
+                <div className="text-3xl font-bold">₮0</div>
                 <CardDescription>per month</CardDescription>
               </div>
             </CardHeader>
@@ -111,7 +111,7 @@ export default function BillingPage() {
                 <CardTitle>Pro</CardTitle>
               </div>
               <div className="space-y-1">
-                <div className="text-3xl font-bold">$19</div>
+                <div className="text-3xl font-bold">₮19</div>
                 <CardDescription>per month</CardDescription>
               </div>
             </CardHeader>

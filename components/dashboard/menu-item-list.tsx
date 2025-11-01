@@ -134,7 +134,7 @@ export function MenuItemList({ initialItems, categories, businessId }: MenuItemL
                             <div className="flex items-center justify-between">
                               <span>{item.name}</span>
                               <span className="text-sm font-normal text-muted-foreground">
-                                ${item.price.toFixed(2)}
+                                ₮{item.price.toFixed(2)}
                               </span>
                             </div>
                           </div>

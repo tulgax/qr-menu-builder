@@ -28,7 +28,7 @@ export function MenuItemCard({ item }: MenuItemCardProps) {
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg">{item.name}</CardTitle>
-          <span className="text-lg font-bold menu-item-price">${item.price.toFixed(2)}</span>
+          <span className="text-lg font-bold menu-item-price">₮{item.price.toFixed(2)}</span>
         </div>
         <CardDescription>{item.description}</CardDescription>
       </CardHeader>
